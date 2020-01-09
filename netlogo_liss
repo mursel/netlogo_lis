@@ -1,0 +1,52 @@
+;; Lissajous-ova kriva
+;; x=sin(a*t + fi)
+;; y=sin(b*t)
+;; a = koliko da ide horizontalno
+;; b = koliko da ide vertikalno
+;; 
+
+turtles-own [x y ugao]
+globals [fi]
+
+to setup
+  clear-all  ;; inicijelno ukloni sve agente
+  setup-turtles ;; inicijacija prvog agenta
+  reset-ticks  ;; resetuj vrijeme na 0
+end
+
+to setup-turtles
+  create-turtles 1 [ setxy 0 0 ]  ;; kreiraj i postavi jednog agenta na poziciju xy: 0,0
+end
+
+to go
+  draw-curve  ;; iscrtaj krivu
+  here-we-go-again
+  if count turtles > 0 [ ;; dokle god ima agenata odradi jedan tick
+  tick
+  ]
+end
+
+to here-we-go-again
+  if count turtles > 10000 [ ;; ako smo presli preko 10000 agenata?
+    foreach sort turtles [ turt -> ;; foreach petljom prodji kroz sve agente (uvjek radi uzlazno)
+      ask turt [die] ;; ubij agenta
+    ]
+  ]
+end
+
+to check-fi
+  ask turtles [
+    if fi >= 2 [ ;; provjeri da li je vrijednost ugla veca od 2
+      set fi 0 ;; ako jeste postavi fi na 0
+    ]
+  ]
+end
+
+to draw-curve
+  ask turtles [
+    set x aX * sin (a * fi) ;; odredi X
+    set y bX * sin (b * fi + 0.78539816339) ;; PI/4 ;; odredi Y
+    hatch 1 [ rt fi setxy x y] ;; kreiraj novog a slijedeceg agenta na novoj poziciji (X,Y)
+    set fi fi + 0.5 ;; povecaj ugao direkcije agenta za 0.5
+  ]
+end
